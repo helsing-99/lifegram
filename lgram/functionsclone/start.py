@@ -284,7 +284,7 @@ async def promo_reply(client, message):
         return
 
     try:
-        await message.reply_text("🤖 Created with @Lgramcreatorbot")
+        await message.reply_text("🤖 Created with @ForceSubCloneBot")
     except:
         pass
 
