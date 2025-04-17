@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from pyrogram.types import Message
 from pymongo import MongoClient
 from config import MONGO_URI, MONGO_DB_NAME
-
+from pyrogram.enums import ParseMode
 mongo_client = MongoClient(MONGO_URI)
 mongo_db = mongo_client["cloned"]
 bots_collection = mongo_db["bots"]
@@ -66,10 +66,62 @@ async def start_handler(client: Client, message: Message):
         )
 
         custom_message = bot_data.get("start_message", "Hello! I'm alive.")
-        await message.reply_text(custom_message)
+        custom_buttons = bot_data.get("custom_buttons", [])
+        keyboard = InlineKeyboardMarkup([
+        [InlineKeyboardButton(btn["text"], url=btn["url"])] for btn in custom_buttons
+        ]) if custom_buttons else None
 
+        await message.reply_text(custom_message, reply_markup=keyboard)
+        await message.reply_text("🤖 Created with @Lgramcreatorbot")
     except Exception as e:
-        await message.reply_text(f"An error occurred: {e}")
+        await message.reply_text(f"An error occurred: share this at support {e}")
+    
+
+@Client.on_message(filters.command("setbutton") & filters.private)
+async def set_button_handler(client, message):
+    me = await client.get_me()
+    bot_data = bots_collection.find_one({"bot_id": me.id})
+
+    if not bot_data:
+        return await message.reply_text("This bot is not in the database.")
+
+    if message.from_user.id != bot_data.get("owner_id"):
+        return await message.reply_text("🚫 Only the bot owner can add buttons.")
+
+    try:
+        parts = message.text.split(" ", 1)[1]
+        text, url = parts.split(" - ")
+    except:
+        return await message.reply_text("Usage: /setbutton Button Text - https://example.com")
+
+    new_button = {"text": text.strip(), "url": url.strip()}
+    bots_collection.update_one(
+        {"bot_id": me.id},
+        {"$push": {"custom_buttons": new_button}}
+    )
+    await message.reply_text(
+    f"Button added!\n\n<b>{text.strip()}</b> → <code>{url.strip()}</code>",
+    parse_mode=ParseMode.HTML
+)
+
+@Client.on_message(filters.command("clearbuttons") & filters.private)
+async def clear_buttons_handler(client, message):
+    me = await client.get_me()
+    bot_data = bots_collection.find_one({"bot_id": me.id})
+
+    if not bot_data:
+        return await message.reply_text("This bot is not in the database.")
+
+    if message.from_user.id != bot_data.get("owner_id"):
+        return await message.reply_text("🚫 Only the bot owner can clear buttons.")
+
+    bots_collection.update_one(
+        {"bot_id": me.id},
+        {"$set": {"custom_buttons": []}}
+    )
+
+    await message.reply_text("All buttons have been cleared.")
+
 
 
 @Client.on_message(filters.command("setstart") & filters.private)
@@ -150,6 +202,11 @@ async def help_handler(client: Client, message: Message):
     
     "<b>/broadcast</b> <code>Your message</code>\n"
     "Send a message to all users who have started your bot.\n\n"
+    "<b>/setbutton </b> <code> button name - url</code>\n"
+    "Setup or update buttons on the custom message users see when they press /start.\n\n"
+    
+    "<b>/clearbuttons</b> \n"
+    "deletes the custom buttons\n\n"
     
     "<b>/addfsub</b> <code>channel_id or @username</code>\n"
     "Add a channel or group where users must be a member to use the bot.\n\n"
@@ -284,7 +341,7 @@ async def promo_reply(client, message):
         return
 
     try:
-        await message.reply_text("🤖 Created with @ForceSubCloneBot")
+        await message.reply_text("🤖 Created with @Lgramcreatorbot")
     except:
         pass
 
