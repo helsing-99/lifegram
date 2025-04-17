@@ -41,7 +41,6 @@ async def handle_callback_query(client, callback_query):
 
 Go to @BotFather on Telegram.\n
 Use the `/newbot` command to create a new bot and get the bot token.\n
-
 Forward it to this bot from @botfather with tag.\n
 Once cloned, you can manage your bot via this bot, and it will work just like the original.\n
 If you need to delete a cloned bot, use `/deleteclone` <bot_token>
@@ -109,7 +108,7 @@ We do not sell your data to third party"""
     elif data == "right_to_process":
         text = """
 You have all rights to process your data on this bot
-If you want to delete your data contact @Lol_Gram
+If you want to delete your data contact @Drxew
 Warning: 
 While we delete your data all your bots and bot settings will be lost from db."""
         back_button = InlineKeyboardMarkup(
@@ -128,6 +127,10 @@ Owner Commands Guide
 Use these commands to fully manage your cloned bot:
 /setstart Your start message
 Set or update the custom message users see when they press /start.
+/setbutton button name - url
+Setup or update buttons on the custom message users see when they press /start.
+/clearbuttons
+deletes the custom buttons
 /broadcast Your message
 Send a message to all users who have started your bot.
 /addfsub channel_id or @username
@@ -150,7 +153,7 @@ Made with <b>@lgrambo
 @app.on_message(filters.command("start"))
 async def privacy_command(client, message):
     user = message.from_user
-    support_channel = "@Lol_Gram" 
+    support_channel = "@drxew" 
 
     try:
         member = await client.get_chat_member(support_channel, user.id)
@@ -197,7 +200,7 @@ from pyrogram.types import Message
 
 @app.on_callback_query(filters.regex("check_fsub"))
 async def check_fsub_main(client, callback_query):
-    support_channel = "@Lol_Gram"
+    support_channel = "@drxew"
     user_id = callback_query.from_user.id
 
     try:
