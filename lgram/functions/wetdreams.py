@@ -108,7 +108,7 @@ We do not sell your data to third party"""
     elif data == "right_to_process":
         text = """
 You have all rights to process your data on this bot
-If you want to delete your data contact @Drxew
+If you want to delete your data contact @Lol_Gram
 Warning: 
 While we delete your data all your bots and bot settings will be lost from db."""
         back_button = InlineKeyboardMarkup(
@@ -153,7 +153,7 @@ Made with <b>@lgrambo
 @app.on_message(filters.command("start"))
 async def privacy_command(client, message):
     user = message.from_user
-    support_channel = "@drxew" 
+    support_channel = "@Lol_Gram" 
 
     try:
         member = await client.get_chat_member(support_channel, user.id)
@@ -200,7 +200,7 @@ from pyrogram.types import Message
 
 @app.on_callback_query(filters.regex("check_fsub"))
 async def check_fsub_main(client, callback_query):
-    support_channel = "@drxew"
+    support_channel = "@Lol_Gram"
     user_id = callback_query.from_user.id
 
     try:
