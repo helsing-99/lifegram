@@ -72,7 +72,7 @@ async def start_handler(client: Client, message: Message):
         ]) if custom_buttons else None
 
         await message.reply_text(custom_message, reply_markup=keyboard)
-        await message.reply_text("🤖 Created with @Lgramcreatorbot")
+        await message.reply_text("🤖 Created with @ForceSubCloneBot")
     except Exception as e:
         await message.reply_text(f"An error occurred: share this at support {e}")
     
@@ -341,7 +341,7 @@ async def promo_reply(client, message):
         return
 
     try:
-        await message.reply_text("🤖 Created with @Lgramcreatorbot")
+        await message.reply_text("🤖 Created with @ForceSubCloneBot")
     except:
         pass
 
